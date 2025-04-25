@@ -1,43 +1,40 @@
-import type React from "react";
-import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import styles from "./Sidebar.module.css";
-import { useThrottle } from "@uidotdev/usehooks";
+import { useThrottle, useWindowSize } from "@uidotdev/usehooks";
+import {
+  Cross2Icon,
+  HamburgerMenuIcon,
+  MagnifyingGlassIcon,
+} from "@radix-ui/react-icons";
 import { axiosInstance } from "@libs/axios";
-
-interface SearchItemResponse {
-  login: string;
-  id: number;
-  node_id: string;
-  avatar_url: string;
-  gravatar_id: string;
-  url: string;
-  html_url: string;
-  followers_url: string;
-  subscriptions_url: string;
-  organizations_url: string;
-  repos_url: string;
-  received_events_url: string;
-  type: string;
-  score: number;
-  following_url: string;
-  gists_url: string;
-  starred_url: string;
-  events_url: string;
-  site_admin: boolean;
-}
-
-interface SearchResponse {
-  total_count: number;
-  incomplete_results: boolean;
-  items: SearchItemResponse[];
-}
+import type { SearchItemResponse, SearchResponse } from "@dto/search";
 
 function Sidebar() {
   const [username, setUsername] = useState("");
   const [searchItems, setSearchItems] = useState<SearchItemResponse[]>([]);
+  const [expanded, setExpanded] = useState(true);
+
   const throttledUsername = useThrottle(username, 500);
+  const size = useWindowSize();
+
+  const toggleSidebar = () => {
+    setExpanded(!expanded);
+  };
+
+  const [isMobile, isReady] = useMemo(() => {
+    if (size.width === null) {
+      return [false, false];
+    }
+
+    if (size.width > 768) {
+      setExpanded(true);
+      return [false, true];
+    }
+
+    setExpanded(false);
+    return [true, true];
+  }, [size.width]);
 
   useEffect(() => {
     if (throttledUsername !== "") {
@@ -60,47 +57,90 @@ function Sidebar() {
     }
   }, [throttledUsername]);
 
+  if (!isReady) {
+    return <></>;
+  }
+
   return (
-    <aside className={styles.sidebar}>
-      <div className={styles.sidebar__search}>
-        <div className={styles["sidebar__search-container"]}>
-          <label htmlFor="search">
-            <MagnifyingGlassIcon className={styles["sidebar__search-icon"]} />
-          </label>
-          <input
-            onChange={(event) => setUsername(event.currentTarget.value)}
-            value={username}
-            id="search"
-            type="text"
-            placeholder="Search..."
-            className={styles["sidebar__search-input"]}
-          />
+    <>
+      {isMobile && (
+        <button
+          onClick={toggleSidebar}
+          className={styles["sidebar__mobile-toggle"]}
+          hidden={expanded}
+          aria-label="Open sidebar"
+        >
+          <HamburgerMenuIcon />
+        </button>
+      )}
+
+      <div
+        className={`${styles.sidebar} ${
+          isMobile && expanded ? styles["sidebar--mobile-expanded"] : ""
+        } ${
+          !isMobile ? styles["sidebar--expanded"] : styles["sidebar--collapsed"]
+        }`}
+      >
+        <div className={styles.sidebar__search}>
+          {isMobile && expanded && (
+            <button
+              className={styles["sidebar__close-button"]}
+              onClick={toggleSidebar}
+              aria-label="Close sidebar"
+            >
+              <Cross2Icon />
+            </button>
+          )}
+
+          <div className={styles["sidebar__search-container"]}>
+            <label htmlFor="search">
+              <MagnifyingGlassIcon className={styles["sidebar__search-icon"]} />
+            </label>
+
+            <input
+              hidden={!expanded}
+              onChange={(event) => setUsername(event.currentTarget.value)}
+              value={username}
+              id="search"
+              type="text"
+              placeholder="Search..."
+              className={styles["sidebar__search-input"]}
+            />
+          </div>
+        </div>
+
+        <div className={styles.sidebar__content}>
+          {expanded && searchItems.length > 0 && (
+            <div className={styles.sidebar__results}>
+              {searchItems.map((item) => (
+                <div key={item.id} className={styles["sidebar__user-item"]}>
+                  <div className={styles["sidebar__user-avatar"]}>
+                    <Image
+                      src={item.avatar_url}
+                      alt={item.login}
+                      width={40}
+                      height={40}
+                      className={styles["sidebar__user-image"]}
+                    />
+                  </div>
+                  {expanded && (
+                    <div className={styles["sidebar__user-name"]}>
+                      {item.login}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {expanded && searchItems.length === 0 && (
+            <div className={styles["sidebar__no-results"]}>
+              No results found
+            </div>
+          )}
         </div>
       </div>
-
-      <div className={styles.sidebar__content}>
-        {searchItems.length > 0 ? (
-          <div className={styles.sidebar__results}>
-            {searchItems.map((item) => (
-              <div key={item.id} className={styles["sidebar__user-item"]}>
-                <div className={styles["sidebar__user-avatar"]}>
-                  <Image
-                    src={item.avatar_url}
-                    alt={item.login}
-                    width={40}
-                    height={40}
-                    className={styles["sidebar__user-image"]}
-                  />
-                </div>
-                <div className={styles["sidebar__user-name"]}>{item.login}</div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className={styles["sidebar__no-results"]}>No results found</div>
-        )}
-      </div>
-    </aside>
+    </>
   );
 }
 
