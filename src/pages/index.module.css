@@ -1,0 +1,48 @@
+/* Main Content */
+.main {
+  padding: 0 32px;
+  margin: 32px auto;
+  box-sizing: border-box;
+}
+
+.main__title {
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .main {
+    width: calc(100% - 256px);
+    margin: 32px 0 32px auto;
+  }
+
+  .main__title {
+    text-align: start;
+  }
+}
+
+/* Repository List */
+.repository_list__title {
+  margin-bottom: 24px;
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--color-neutral-900);
+}
+
+.repository_list__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(288px, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .repository_list {
+    padding: 20px;
+  }
+
+  .repository_list__grid {
+    grid-template-columns: 1fr;
+  }
+}

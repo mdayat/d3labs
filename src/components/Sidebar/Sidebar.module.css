@@ -5,6 +5,10 @@
   background-color: var(--color-neutral-900);
   color: var(--color-neutral-50);
   transition: width 0.3s ease, transform 0.3s ease;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
 }
 
 .sidebar--expanded {
@@ -30,13 +34,6 @@
 }
 
 @media (max-width: 767px) {
-  .sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-  }
-
   .sidebar--collapsed {
     transform: translateX(-100%);
   }

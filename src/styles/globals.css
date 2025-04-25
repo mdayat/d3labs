@@ -100,3 +100,8 @@ body {
   color: var(--color-neutral-900);
   background-color: var(--color-neutral-50);
 }
+
+.markdown-body {
+  padding: 32px;
+  border-radius: 16px;
+}
