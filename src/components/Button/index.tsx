@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, FC, ReactNode } from "react";
+import type { ButtonHTMLAttributes, ReactNode } from "react";
 import styles from "./Button.module.css";
 
 type ButtonSize = "sm" | "md" | "lg";
@@ -20,7 +20,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   fullWidth?: boolean;
 }
 
-const Button: FC<ButtonProps> = ({
+function Button({
   children,
   size = "md",
   shape = "rounded",
@@ -28,7 +28,7 @@ const Button: FC<ButtonProps> = ({
   className = "",
   fullWidth = false,
   ...props
-}) => {
+}: ButtonProps) {
   const buttonClasses = [
     styles.button,
     styles[`button--size-${size}`],
@@ -43,6 +43,6 @@ const Button: FC<ButtonProps> = ({
       {children}
     </button>
   );
-};
+}
 
 export { Button };
