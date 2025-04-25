@@ -9,12 +9,15 @@ import {
 } from "@radix-ui/react-icons";
 import { axiosInstance } from "@libs/axios";
 import type { SearchItemResponse, SearchResponse } from "@dto/search";
+import { toast } from "react-toastify";
+import { useSelectedUser } from "@contexts/SelectedUserProvider";
 
 function Sidebar() {
   const [username, setUsername] = useState("");
   const [searchItems, setSearchItems] = useState<SearchItemResponse[]>([]);
   const [expanded, setExpanded] = useState(true);
 
+  const { setSelectedUser } = useSelectedUser();
   const throttledUsername = useThrottle(username, 500);
   const size = useWindowSize();
 
@@ -39,18 +42,26 @@ function Sidebar() {
   useEffect(() => {
     if (throttledUsername !== "") {
       (async () => {
-        const res = await axiosInstance.get<SearchResponse>(
-          `https://api.github.com/search/users?q=${throttledUsername}`,
-          {
-            headers: {
-              Accept: "application/vnd.github+json",
-              Authorization: `Bearer ${process.env.NEXT_PUBLIC_ACCESS_TOKEN}`,
-              "X-GitHub-Api-Version": "2022-11-28",
-            },
-          }
-        );
+        try {
+          const res = await axiosInstance.get<SearchResponse>(
+            `https://api.github.com/search/users?q=${throttledUsername}`,
+            {
+              headers: {
+                Accept: "application/vnd.github+json",
+                Authorization: `Bearer ${process.env.NEXT_PUBLIC_ACCESS_TOKEN}`,
+                "X-GitHub-Api-Version": "2022-11-28",
+              },
+            }
+          );
 
-        setSearchItems(res.data.items);
+          setSearchItems(res.data.items);
+        } catch (error) {
+          console.error("failed to search user", { cause: error });
+          toast("Cannot search user, please try again", {
+            type: "error",
+            theme: "colored",
+          });
+        }
       })();
     } else {
       setSearchItems([]);
@@ -113,7 +124,17 @@ function Sidebar() {
           {expanded && searchItems.length > 0 && (
             <div className={styles.sidebar__results}>
               {searchItems.map((item) => (
-                <div key={item.id} className={styles["sidebar__user-item"]}>
+                <div
+                  key={item.id}
+                  onClick={() =>
+                    setSelectedUser({
+                      id: item.id,
+                      login: item.login,
+                      avatar_url: item.avatar_url,
+                    })
+                  }
+                  className={styles["sidebar__user-item"]}
+                >
                   <div className={styles["sidebar__user-avatar"]}>
                     <Image
                       src={item.avatar_url}

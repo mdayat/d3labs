@@ -97,3 +97,57 @@
 .repository_card__readme_button:hover {
   background-color: var(--color-neutral-200);
 }
+
+/* Skeleton styles */
+.repository_card__skeleton {
+  pointer-events: none;
+}
+
+.repository_card__skeleton_element {
+  background: linear-gradient(
+    90deg,
+    var(--color-neutral-200) 0%,
+    var(--color-neutral-100) 50%,
+    var(--color-neutral-200) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+.repository_card__skeleton_name {
+  width: 60%;
+  height: 22px;
+}
+
+.repository_card__skeleton_visibility {
+  width: 70px;
+  height: 22px;
+}
+
+.repository_card__skeleton_description {
+  height: 16px;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.repository_card__skeleton_description_short {
+  height: 16px;
+  width: 70%;
+  margin-bottom: 16px;
+}
+
+.repository_card__skeleton_button {
+  height: 36px;
+  border-radius: 6px;
+  flex: 1;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
