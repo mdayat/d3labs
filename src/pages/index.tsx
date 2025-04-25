@@ -5,6 +5,7 @@ import type { RepositoryResponse } from "@dto/repository";
 import { useSelectedUser } from "@contexts/SelectedUserProvider";
 import { toast } from "react-toastify";
 import dynamic from "next/dynamic";
+import Head from "next/head";
 
 const RepositoryCard = dynamic(() =>
   import("@components/RepositoryCard").then(
@@ -81,27 +82,37 @@ export default function Home() {
   }
 
   return (
-    <main className={styles.main}>
-      <h1 className={styles.main__title}>User&apos;s Repositories</h1>
+    <>
+      <Head>
+        <title>Muhammad Nur Hidayat</title>
+        <meta
+          name="description"
+          content="A simple application to search github users, and view their repositories and README file"
+        />
+      </Head>
 
-      {isLoading ? (
-        <div className={styles.repository_list__grid}>
-          <RepositoryCardSkeleton />
-          <RepositoryCardSkeleton />
-          <RepositoryCardSkeleton />
-          <RepositoryCardSkeleton />
-        </div>
-      ) : repositories.length > 0 ? (
-        <div className={styles.repository_list__grid}>
-          {repositories.map((repo) => (
-            <RepositoryCard key={repo.id} repository={repo} />
-          ))}
-        </div>
-      ) : (
-        <div className={styles.repository_list__empty}>
-          The user doesn&apos;t have repositories
-        </div>
-      )}
-    </main>
+      <main className={styles.main}>
+        <h1 className={styles.main__title}>User&apos;s Repositories</h1>
+
+        {isLoading ? (
+          <div className={styles.repository_list__grid}>
+            <RepositoryCardSkeleton />
+            <RepositoryCardSkeleton />
+            <RepositoryCardSkeleton />
+            <RepositoryCardSkeleton />
+          </div>
+        ) : repositories.length > 0 ? (
+          <div className={styles.repository_list__grid}>
+            {repositories.map((repo) => (
+              <RepositoryCard key={repo.id} repository={repo} />
+            ))}
+          </div>
+        ) : (
+          <div className={styles.repository_list__empty}>
+            The user doesn&apos;t have repositories
+          </div>
+        )}
+      </main>
+    </>
   );
 }

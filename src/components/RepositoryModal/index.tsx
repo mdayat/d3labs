@@ -12,7 +12,9 @@ interface RepositoryModalProps {
 }
 
 function RepositoryModal({ repositoryName, setIsOpen }: RepositoryModalProps) {
-  const [readmeContent, setReadmeContent] = useState("");
+  const [readmeContent, setReadmeContent] = useState(
+    `<p style="text-align: center; font-style: italic;">Loading...</p>`
+  );
 
   const { selectedUser } = useSelectedUser();
 
