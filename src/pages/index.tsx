@@ -2,10 +2,21 @@ import { axiosInstance } from "@libs/axios";
 import { useEffect, useState } from "react";
 import styles from "./index.module.css";
 import type { RepositoryResponse } from "@dto/repository";
-import { RepositoryCard } from "@components/RepositoryCard";
 import { useSelectedUser } from "@contexts/SelectedUserProvider";
 import { toast } from "react-toastify";
-import { RepositoryCardSkeleton } from "@components/RepositoryCard/Skeleton";
+import dynamic from "next/dynamic";
+
+const RepositoryCard = dynamic(() =>
+  import("@components/RepositoryCard").then(
+    ({ RepositoryCard }) => RepositoryCard
+  )
+);
+
+const RepositoryCardSkeleton = dynamic(() =>
+  import("@components/RepositoryCard/Skeleton").then(
+    ({ RepositoryCardSkeleton }) => RepositoryCardSkeleton
+  )
+);
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
@@ -39,6 +50,8 @@ export default function Home() {
                 created_at: item.created_at,
               }))
             );
+          } else {
+            setRepositories([]);
           }
         } catch (error) {
           console.error("failed to get user repositories", { cause: error });

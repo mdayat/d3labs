@@ -25,6 +25,18 @@ function Sidebar() {
     setExpanded(!expanded);
   };
 
+  const selectUser = (item: SearchItemResponse) => {
+    if (isMobile) {
+      setExpanded(false);
+    }
+
+    setSelectedUser({
+      id: item.id,
+      login: item.login,
+      avatar_url: item.avatar_url,
+    });
+  };
+
   const [isMobile, isReady] = useMemo(() => {
     if (size.width === null) {
       return [false, false];
@@ -74,6 +86,10 @@ function Sidebar() {
 
   return (
     <>
+      {isMobile && expanded && (
+        <div className={styles.sidebar__overlay} onClick={toggleSidebar} />
+      )}
+
       {isMobile && (
         <button
           onClick={toggleSidebar}
@@ -126,13 +142,7 @@ function Sidebar() {
               {searchItems.map((item) => (
                 <div
                   key={item.id}
-                  onClick={() =>
-                    setSelectedUser({
-                      id: item.id,
-                      login: item.login,
-                      avatar_url: item.avatar_url,
-                    })
-                  }
+                  onClick={() => selectUser(item)}
                   className={styles["sidebar__user-item"]}
                 >
                   <div className={styles["sidebar__user-avatar"]}>

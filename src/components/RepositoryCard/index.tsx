@@ -2,7 +2,13 @@ import type { RepositoryResponse } from "@dto/repository";
 import styles from "./RepositoryCard.module.css";
 import { ExternalLinkIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
-import { RepositoryModal } from "@components/RepositoryModal";
+import dynamic from "next/dynamic";
+
+const RepositoryModal = dynamic(() =>
+  import("@components/RepositoryModal").then(
+    ({ RepositoryModal }) => RepositoryModal
+  )
+);
 
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString("en-US", {
