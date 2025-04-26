@@ -72,12 +72,22 @@ export default function Home() {
 
   if (!selectedUser && repositories.length === 0) {
     return (
-      <main className={styles.main}>
-        <h1 className={styles.main__title}>User&apos;s Repositories</h1>
-        <div className={styles.repository_list__empty}>
-          Search and select a user to see their repositories
-        </div>
-      </main>
+      <>
+        <Head>
+          <title>Muhammad Nur Hidayat</title>
+          <meta
+            name="description"
+            content="A simple application to search github users, and view their repositories and README file"
+          />
+        </Head>
+
+        <main className={styles.main}>
+          <h1 className={styles.main__title}>User&apos;s Repositories</h1>
+          <div className={styles.repository_list__empty}>
+            Search and select a user to see their repositories
+          </div>
+        </main>
+      </>
     );
   }
 
